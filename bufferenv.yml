@@ -1,0 +1,13 @@
+name: bufferenv
+channels:
+  - pandas
+  - ipywidgets
+  - csv
+dependencies:
+  - python=3.9.1
+  - pandas=0.23.4
+  - ipywidgets=7.4.2
+  - csv=1.0
+
+prefix: /Users/username/miniconda3/envs/bufferenv
+```
