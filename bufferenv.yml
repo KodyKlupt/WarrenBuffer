@@ -1,13 +1,35 @@
+# Add your YAML content here
 name: bufferenv
 channels:
-  - pandas
-  - ipywidgets
-  - csv
+  - conda-forge
+  - defaults
 dependencies:
-  - python=3.9.1
-  - pandas=0.23.4
-  - ipywidgets=7.4.2
-  - csv=1.0
+  - python=3.7
+  - pip
+  - pandas
+  - numpy
+  - matplotlib
+  - csv
+  - os
+  - sys
+  - argparse
+  - datetime
 
-prefix: /Users/username/miniconda3/envs/bufferenv
 ```
+
+### 2. Create a new environment from the YAML file
+
+```bash
+
+conda env create -f bufferenv.yml
+
+```
+
+### 3. Activate the environment
+
+```bash
+
+conda activate bufferenv
+
+```
+
