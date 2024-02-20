@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Buffer Calculator
 
 A simple calculator program that performs buffer calculations.
@@ -21,3 +22,6 @@ A simple calculator program that performs buffer calculations.
    ```shell
    git clone https://github.com/kodyklupt/KODY_BUFFERCALCULATOR
 
+=======
+This is a quick and easy program that calculates the components needed to be added to a chemical buffer.
+>>>>>>> 13eedb96bfa697707d5423665014c9837b712aad
