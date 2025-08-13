@@ -1,55 +1,72 @@
-
-
 import pandas as pd
-import csv
-import os 
+import os
 import time
+import argparse
+
+# Set up argument parser
+parser = argparse.ArgumentParser(description='Calculate buffer recipes.')
+parser.add_argument('--volume', type=float, required=True, help='Total volume of the solution in L')
+parser.add_argument('--dry', nargs=2, action='append', metavar=('NAME', 'CONC_mM'), help='Dry chemical name and concentration in mM. Can be specified multiple times.')
+parser.add_argument('--wet', nargs=2, action='append', metavar=('NAME', 'CONC_mM'), help='Wet chemical name and concentration in mM. Can be specified multiple times.')
+parser.add_argument('--name', type=str, required=True, help='Name of the buffer solution')
+args = parser.parse_args()
+
+# Read chemical libraries
+dry_lib = pd.read_csv("Chemical Libraries/dry.csv")
+wet_lib = pd.read_csv("Chemical Libraries/wet.csv")
 
 
-dry = pd.read_csv("Chemical Libraries\dry.csv", index_col="DryChemical")  # this reads the data csv and uses the chemical name as the index for the data to eventually look up the MW
-wet = pd.read_csv("Chemical Libraries/wet.csv", index_col="WetChemical") #will index and search molarity instead
+volumeinput = args.volume
 
-volumeinput = float(input("Enter the volume of the solution in L: ")) #this is the input for the volume of the solution
+drydict = {}
+if args.dry:
+    for dry_chem in args.dry:
+        name, conc_mM_str = dry_chem
+        conc_mM = float(conc_mM_str)
+        conc_M = conc_mM / 1000 # convert mM to M
+
+        # Find the row with the matching reagent name (case-insensitive)
+        row = dry_lib[dry_lib['Reagent'].str.lower() == name.lower()]
+
+        if not row.empty:
+            mw = row.iloc[0]['Molecular Weight (g/mol)']
+            drymass = conc_M * mw * volumeinput
+            drydict[row.iloc[0]['Reagent']] = drymass
+        else:
+            print(f"Error: Dry chemical '{name}' not found in the library.")
 
 
-drydict = {} #this is the dictionary for the dry chemicals
-dryinput = input("Enter the dry chemical name: ") #this is the input for the chemical name
-dryinput = dryinput.upper().strip()
-while dryinput != "DONE": #this is the loop that will keep asking for input until the user enters exit
-    promptmm = float(input("Enter the conc of the dry chemical in M: ")) #this is the input for the conc of the chemical
-    MW = dry.loc[dryinput, "WEIGHT"] #this looks up the MW of the chemical in the data csv
-    drymass = promptmm*MW*volumeinput #this calculates the mass of the chemical needed for the buffer
-    drydict.update({dryinput: drymass}) #this adds the chemical and its mass to the dictionary
-    dryinput = input("Enter the dry chemical name, type DONE to exit: ") #this is the input for the chemical name
-    dryinput = dryinput.upper().strip()
-# print(drydict, "note the values are all in grams") #this prints the dictionary
+wetdict = {}
+if args.wet:
+    for wet_chem in args.wet:
+        name, conc_mM_str = wet_chem
+        conc_mM = float(conc_mM_str)
+        conc_M = conc_mM / 1000 # convert mM to M
+
+        # Find the row with the matching reagent name (case-insensitive)
+        row = wet_lib[wet_lib['Reagent'].str.lower() == name.lower()]
+
+        if not row.empty:
+            stock = row.iloc[0]['Molarity (mol/L)']
+            wetvol = volumeinput * conc_M / stock * 1000
+            wetdict[row.iloc[0]['Reagent']] = wetvol
+        else:
+            print(f"Error: Wet chemical '{name}' not found in the library.")
 
 
-wetdict = {} #this is the dictionary for the dry chemicals
-wet_question = input("Do you need to add wet chemicals? (yes/no): ")
-if wet_question == "yes":
-    wetinput = input("Enter the wet chemical name, type DONE to exit: ") #this is the input for the chemical name
-    wetinput = wetinput.upper().strip()
-    while wetinput != "DONE": #this is the loop that will keep asking for input until the user enters exit
-        promptmm = float(input("Enter the conc of the chemical in M: ")) #this is the input for the conc of the chemical
-        stock = wet.loc[wetinput, "MOLARITY"] #this looks up the MW of the chemical in the data csv
-        wetvol = volumeinput*promptmm/stock*1000 #this calculates the mass of the chemical needed for the buffer
-        wetdict.update({wetinput: wetvol}) #this adds the chemical and its mass to the dictionary
-        wetinput = input("Enter the wet chemical name, type DONE to exit: ") #this is the input for the chemical name
-        wetinput = wetinput.upper().strip()
-    # print(wetdict, "note the values are all in mL") #this prints the dictionary
-else:
-    pass
+dataframedry = pd.DataFrame.from_dict(drydict, orient="index", columns=["Mass (g)"])
+dataframewet = pd.DataFrame.from_dict(wetdict, orient="index", columns=["Volume (mL)"])
 
+if not dataframedry.empty or not dataframewet.empty:
+    combined = pd.concat([dataframedry, dataframewet], axis=1)
+    print("Here is the buffer recipe for", volumeinput, "L of buffer:", "\n", combined)
+
+    time_str = time.strftime("%Y%m%d-%H%M%S")
+    if not os.path.exists("Outputs"):
+        os.makedirs("Outputs")
     
-dataframedry = pd.DataFrame.from_dict(drydict, orient="index", columns=["Mass (g)"]) #this converts the dictionary to a dataframe
-dataframewet = pd.DataFrame.from_dict(wetdict, orient="index", columns=["Volume (mL)"]) #this converts the dictionary to a dataframe
-
-combined = pd.concat([dataframedry, dataframewet], axis=1) #this combines the two dataframes
-print("Here is the buffer recipe for", volumeinput, "L of buffer:", "\n", combined) #this prints the combined dataframe
-
-time = time.strftime("%Y%m%d-%H%M%S") #this gets the current date and time
-dir = os.chdir("Outputs")
-combined.to_csv("logbuffer" + time + ".csv") #this saves the dataframe to a csv file
-
-
+    output_path = os.path.join("Outputs", f"{args.name}_{time_str}.csv")
+    combined.to_csv(output_path)
+    print(f"Recipe saved to {output_path}")
+else:
+    print("No valid chemicals were specified. Nothing to do.")

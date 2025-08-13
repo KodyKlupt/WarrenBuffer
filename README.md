@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Buffer Calculator
 
 A simple calculator program that performs buffer calculations.
@@ -20,8 +19,35 @@ A simple calculator program that performs buffer calculations.
 1. Clone the repository:
 
    ```shell
-   git clone https://github.com/kodyklupt/KODY_BUFFERCALCULATOR
+   git clone https://github.com/kodyklupt/WarrenBuffer
+   ```
 
-=======
-This is a quick and easy program that calculates the components needed to be added to a chemical buffer.
->>>>>>> 13eedb96bfa697707d5423665014c9837b712aad
+## Usage
+
+Run the script from the command line, providing the total volume and the chemicals to add.
+The script accepts concentrations in mM.
+
+### Command Structure
+
+```bash
+python buffercalculator.py --name test --volume <L> --dry <name> <concentration> --wet <name> <concentration>
+```
+
+### Example
+
+To create a 1.5 L buffer with 200 mM Sodium Chloride, 100 mM Tris, and 50 mM HCl, you would run:
+
+```bash
+python buffercalculator.py --volume 1.5 --dry "Sodium Chloride" 200 --dry "Tris" 100 --wet "HCl" 50
+```
+
+## Chemical Libraries
+
+The `Chemical Libraries` folder contains lists of wet and dry reagents that can be used by the buffer calculator. You can easily add your own chemicals to these lists.
+
+- `dry.csv`: This file contains a list of dry reagents and their corresponding molecular weights in g/mol.
+- `wet.csv`: This file contains a list of wet reagents and their corresponding molarities in mol/L.
+
+## Outputs
+
+The `Outputs` folder contains the generated buffer recipes in CSV format. Each time you create a new buffer, a CSV file with the recipe will be saved in this folder.
