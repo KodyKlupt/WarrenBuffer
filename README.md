@@ -48,6 +48,18 @@ The `Chemical Libraries` folder contains lists of wet and dry reagents that can 
 - `dry.csv`: This file contains a list of dry reagents and their corresponding molecular weights in g/mol.
 - `wet.csv`: This file contains a list of wet reagents and their corresponding molarities in mol/L.
 
+## Google Gemini Chemical Libraries
+
+Gemini was prompted to generate a list of common chemical reagents and associated molecular weights. These are the loaded default files. Use caution when using these libraries.
+
+## Generating user specific dictionaries
+
+Go to ```/Chemical_Libraries/.gitignore``` and uncomment the dry.csv or wet.csv so your libraries are not written over in future pulls from Git. Alternatively, you can use redirect the library in buffercalculator.py
+```bash
+dry_lib = pd.read_csv("Chemical_Libraries/dry.csv")
+wet_lib = pd.read_csv("Chemical_Libraries/wet.csv")
+```
+
 ## Outputs
 
 The `Outputs` folder contains the generated buffer recipes in CSV format. Each time you create a new buffer, a CSV file with the recipe will be saved in this folder.

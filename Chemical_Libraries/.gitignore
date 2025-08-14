@@ -1,7 +1,7 @@
 
 # .gitignore
 ##ignore these files as they are user specific:
-dry.csv
-wet.csv
+#dry.csv
+#wet.csv
 ```
 

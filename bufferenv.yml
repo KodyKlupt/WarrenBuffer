@@ -1,35 +1,11 @@
-# Add your YAML content here
 name: bufferenv
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.7
+  - python=3.9
   - pip
   - pandas
-  - numpy
-  - matplotlib
-  - csv
-  - os
-  - sys
-  - argparse
-  - datetime
-
-```
-
-### 2. Create a new environment from the YAML file
-
-```bash
-
-conda env create -f bufferenv.yml
-
-```
-
-### 3. Activate the environment
-
-```bash
-
-conda activate bufferenv
-
-```
+  - default_api
+  - requests
 

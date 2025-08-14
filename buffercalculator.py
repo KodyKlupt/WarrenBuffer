@@ -12,8 +12,8 @@ parser.add_argument('--name', type=str, required=True, help='Name of the buffer 
 args = parser.parse_args()
 
 # Read chemical libraries
-dry_lib = pd.read_csv("Chemical Libraries/dry.csv")
-wet_lib = pd.read_csv("Chemical Libraries/wet.csv")
+dry_lib = pd.read_csv("Chemical_Libraries/dry_gemini.csv")
+wet_lib = pd.read_csv("Chemical_Libraries/wet_gemini.csv")
 
 
 volumeinput = args.volume
