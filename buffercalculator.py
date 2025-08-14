@@ -30,7 +30,7 @@ if args.dry:
 
         if not row.empty:
             mw = row.iloc[0]['Molecular Weight (g/mol)']
-            drymass = conc_M * mw * volumeinput
+            drymass = conc_M * mw * volumeinput #mass is reported in grams
             drydict[row.iloc[0]['Reagent']] = drymass
         else:
             print(f"Error: Dry chemical '{name}' not found in the library.")
@@ -48,7 +48,7 @@ if args.wet:
 
         if not row.empty:
             stock = row.iloc[0]['Molarity (mol/L)']
-            wetvol = volumeinput * conc_M / stock * 1000
+            wetvol = volumeinput * conc_M / stock * 1000 # convert L to mL
             wetdict[row.iloc[0]['Reagent']] = wetvol
         else:
             print(f"Error: Wet chemical '{name}' not found in the library.")
